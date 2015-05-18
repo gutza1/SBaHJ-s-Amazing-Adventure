@@ -1,7 +1,7 @@
 import java.applet.Applet;
 import java.awt.Graphics;
 
-public class Main extends Applet{
+public class Main extends Applet {
 	/**
 	 * 
 	 */
@@ -24,35 +24,61 @@ public class Main extends Applet{
 	
 	// init - method is called the first time you enter the HTML site with the applet
 	public void init() {
-		
+		this.mainPhysics = new MainPhysics();
+		this.renderer = new Renderer(this);
+		this.statTracker = new StatTracker();
+		this.start();
 	}
 
 	// start - method is called every time you enter the HTML - site with the applet
 	public void start() {
 		//initialize the threads
-		this.mainPhysics = new MainPhysics();
-		this.renderer = new Renderer(this);
-		this.statTracker = new StatTracker();
 		this.render = new Thread(null, this.renderer, "Rendering");
-		this.stats = new Thread(null, this.statTracker, "Statistics");
 		this.render.start();
-		this.stats.start();
 	}
 
 	// stop - method is called if you leave the site with the applet
 	public void stop() {
-		
+		//try {
+			//this.render.wait();
+		//} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+		//}
+		//if (this.physics != null) {
+			//try {
+				//this.physics.wait();
+			//} catch (InterruptedException e) {
+				
+			//}
+		//}
+		//try {
+			//this.stats.wait();
+		//} catch (InterruptedException e) {
+			
+		//}
+		this.destroy();
 	}
 
 	// destroy method is called if you leave the page finally (e. g. closing browser)
 	public void destroy() {
-		
+		this.render.interrupt();
+		this.physics.interrupt();
+		this.stats.interrupt();
+		this.render = null;
+		this.physics = null;
+		this.stats = null;
+		this.renderer = null;
+		this.mainPhysics = null;
+		this.statTracker = null;
 	}
 
 	/** paint - method allows you to paint into your applet. This method is called e.g. if you move your browser window or if you call repaint() */
 	public void paint (Graphics g) {
 		this.renderer.paint(g);
-		
+	}
+	
+	public void update (Graphics g) {
+		this.renderer.update(g);
 	}
 	
 	public void run() {
