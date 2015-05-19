@@ -1,5 +1,8 @@
+package rendering;
 import java.awt.Graphics;
 import java.awt.Image;
+
+import core.Main;
 
 
 public class Renderer implements Runnable{

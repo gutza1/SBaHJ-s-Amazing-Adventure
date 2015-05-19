@@ -1,3 +1,4 @@
+package core;
 
 public class States {
 	public static final int MAIN_MENU = 0;

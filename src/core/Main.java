@@ -1,5 +1,10 @@
+package core;
 import java.applet.Applet;
 import java.awt.Graphics;
+
+import rendering.Renderer;
+import entities.MainPhysics;
+import entities.StatTracker;
 
 public class Main extends Applet {
 	/**
@@ -22,11 +27,15 @@ public class Main extends Applet {
 	private Renderer renderer;
 	private StatTracker statTracker;
 	
+	//this variable stores the background, terrain, sprites, menus, cutscenes, and sound
+	private Assets assets;
+	
 	// init - method is called the first time you enter the HTML site with the applet
 	public void init() {
 		this.mainPhysics = new MainPhysics();
 		this.renderer = new Renderer(this);
 		this.statTracker = new StatTracker();
+		
 		this.start();
 	}
 
@@ -61,9 +70,15 @@ public class Main extends Applet {
 
 	// destroy method is called if you leave the page finally (e. g. closing browser)
 	public void destroy() {
-		this.render.interrupt();
-		this.physics.interrupt();
-		this.stats.interrupt();
+		if (this.render != null) {
+		  this.render.interrupt();
+		}
+		if (this.physics != null) {
+		  this.physics.interrupt();
+		}
+		if (this.physics != null) {
+		  this.stats.interrupt();
+		}
 		this.render = null;
 		this.physics = null;
 		this.stats = null;
