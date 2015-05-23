@@ -3,14 +3,15 @@ import java.applet.Applet;
 import java.awt.Graphics;
 
 import rendering.Renderer;
-import entities.MainPhysics;
+import entities.MainEntities;
 import entities.StatTracker;
 
 public class Main extends Applet {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2L;
+	public static final long serialVersionUID = 3L;
+	public static final int FPS_LIMIT = 60;
     
 	//global variables. These are universal throughout the program.
 	//state determines what state the game is in (main menu, level selection, etc.)
@@ -19,31 +20,40 @@ public class Main extends Applet {
 	
 	// these variables are the threads that handle rendering, physics, and statistics tracking respectively
 	private Thread render;
-	private Thread physics;
+	private Thread entities;
 	private Thread stats;
+	private Thread preloader;
 	
 	//these variables are the classes that control the code for the aftforementioned threads
-	private MainPhysics mainPhysics;
+	private MainEntities mainEntities;
 	private Renderer renderer;
 	private StatTracker statTracker;
+	private PreLoader preLoader;
+	public boolean preloadingComplete = false;
 	
 	//this variable stores the background, terrain, sprites, menus, cutscenes, and sound
-	private Assets assets;
+	public Assets assets;
 	
 	// init - method is called the first time you enter the HTML site with the applet
 	public void init() {
-		this.mainPhysics = new MainPhysics();
+		this.assets = new Assets();
+		this.mainEntities = new MainEntities();
 		this.renderer = new Renderer(this);
 		this.statTracker = new StatTracker();
-		
-		this.start();
+		this.preLoader = new PreLoader(this);
+		this.setState(States.PRELOADER);
+		this.setPreloader(new Thread(null, this.preLoader, "Preloader"));
+		this.getPreloader().start();
+		this.render = new Thread(null, this.renderer, "Rendering");
+		this.render.start();
 	}
 
 	// start - method is called every time you enter the HTML - site with the applet
 	public void start() {
 		//initialize the threads
-		this.render = new Thread(null, this.renderer, "Rendering");
-		this.render.start();
+		//this.render = new Thread(null, this.renderer, "Rendering");
+		//this.render.start();
+		
 	}
 
 	// stop - method is called if you leave the site with the applet
@@ -73,41 +83,48 @@ public class Main extends Applet {
 		if (this.render != null) {
 		  this.render.interrupt();
 		}
-		if (this.physics != null) {
-		  this.physics.interrupt();
+		if (this.entities != null) {
+		  this.entities.interrupt();
 		}
-		if (this.physics != null) {
+		if (this.entities != null) {
 		  this.stats.interrupt();
 		}
 		this.render = null;
-		this.physics = null;
+		this.entities = null;
 		this.stats = null;
 		this.renderer = null;
-		this.mainPhysics = null;
+		this.mainEntities = null;
 		this.statTracker = null;
 	}
 
 	/** paint - method allows you to paint into your applet. This method is called e.g. if you move your browser window or if you call repaint() */
 	public void paint (Graphics g) {
-		this.renderer.paint(g);
+		if (this.renderer != null) {
+		  this.renderer.paint(g);
+		}
 	}
 	
 	public void update (Graphics g) {
-		this.renderer.update(g);
+		if (this.renderer != null) {
+		  this.renderer.update(g);
+		}
 	}
 	
 	public void run() {
         // Stop thread for 20 milliseconds
-		try {
-			Thread.sleep(20);
-		} catch (InterruptedException ex) {
-			// TODO Auto-generated catch block
-		}
-		
 		while (true) {
-					
+		  try {
+			Thread.sleep(20);
+		  } catch (InterruptedException ex) {
+			// TODO Auto-generated catch block
+		  }
+			
+		  if (preloadingComplete) {
+			this.setPreloader(null);
+			this.preLoader = null;
+			System.out.println("Preload complete");
+		  }	
 		}
-		
 	}
 	
 	public int getState() {
@@ -126,6 +143,14 @@ public class Main extends Applet {
 		this.score = newScore;
 	}
 	
+	public Thread getPreloader() {
+		return preloader;
+	}
+
+	public void setPreloader(Thread preloader) {
+		this.preloader = preloader;
+	}
+
 	public Thread getRender() {
 		return this.render;
 	}
@@ -134,12 +159,12 @@ public class Main extends Applet {
 		this.render = newRender;
 	}
 	
-	public Thread getPhysics() {
-		return this.physics;
+	public Thread getEntities() {
+		return this.entities;
 	}
 	
-	public void setPhysics(Thread newPhysics) {
-		this.physics = newPhysics;
+	public void setEntities(Thread newEntities) {
+		this.entities = newEntities;
 	}
 	
 	public Thread getStats() {

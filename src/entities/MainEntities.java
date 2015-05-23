@@ -1,6 +1,6 @@
 package entities;
 
-public class MainPhysics implements Runnable {
+public class MainEntities implements Runnable {
 
 	public void run() {
 		// TODO Auto-generated method stub

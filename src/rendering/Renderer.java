@@ -3,7 +3,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import core.Main;
-
+import core.States;
 
 public class Renderer implements Runnable{
 	
@@ -16,45 +16,42 @@ public class Renderer implements Runnable{
 	}
 
 	public void run() {
-        // Stop thread for 20 milliseconds
-		try {
-			Thread.sleep(20);
-		} catch (InterruptedException ex) {
-			
-		}
-		// do nothing
-		// repaint the applet
-		main.repaint();
 
 		// run a long while (true) this means in our case "always"
 		while (true) {
-					
+		  try {
+			Thread.sleep(1000 / Main.FPS_LIMIT);
+		  } catch (InterruptedException ex) {
+		  }
+		  // do nothing
+		  // repaint the applet
+		  this.main.repaint();
 		}
 		
 	}
 	
   public void update (Graphics g) {
 
-	 
-    dbImage = main.createImage(main.getSize().width, main.getSize().height);
+    dbImage = this.main.createImage(this.main.getSize().width, this.main.getSize().height);
 	dbg = dbImage.getGraphics();
 	// initialize buffer
-	if (dbImage == null)  {
-
+	if (dbImage != null)  {
 	  // clear screen in background
-	  dbg.setColor (main.getBackground ());
-	  dbg.fillRect (0, 0, main.getSize().width, main.getSize().height);
+	  dbg.setColor (this.main.getBackground ());
+	  dbg.fillRect (0, 0, this.main.getSize().width, this.main.getSize().height);
 
 	  // draw elements in background
-	  dbg.setColor (main.getForeground());
-	  paint(dbg);
+	  dbg.setColor (this.main.getForeground());
+	  this.paint(dbg);
 
 	  // draw image on the screen
-	  g.drawImage(dbImage, 0, 0, main);
+	  g.drawImage(dbImage, 0, 0, this.main);
 	}
   }
   
   public void paint(Graphics g) {
-	  
+	  if (this.main.getState() == States.PRELOADER && this.main.assets != null && this.main.assets.getLoadingScreen() != null) {
+		  g.drawImage(this.main.assets.getLoadingScreen(), 0, 0, this.main);
+	  }
   }
 }
