@@ -2,6 +2,7 @@ package core;
 import java.applet.Applet;
 import java.awt.Graphics;
 
+import levels.Level;
 import rendering.Renderer;
 import entities.MainEntities;
 import entities.StatTracker;
@@ -10,13 +11,16 @@ public class Main extends Applet {
 	/**
 	 * 
 	 */
-	public static final long serialVersionUID = 3L;
-	public static final int FPS_LIMIT = 60;
+	public static final long serialVersionUID = 6L;
+	public static final int FPS_LIMIT = 36;
     
 	//global variables. These are universal throughout the program.
 	//state determines what state the game is in (main menu, level selection, etc.)
 	private int state;
 	private int score;
+	private Level currentLevel;
+	private int screenX;
+	private int screenY;
 	
 	// these variables are the threads that handle rendering, physics, and statistics tracking respectively
 	private Thread render;
@@ -112,19 +116,6 @@ public class Main extends Applet {
 	
 	public void run() {
         // Stop thread for 20 milliseconds
-		while (true) {
-		  try {
-			Thread.sleep(20);
-		  } catch (InterruptedException ex) {
-			// TODO Auto-generated catch block
-		  }
-			
-		  if (preloadingComplete) {
-			this.setPreloader(null);
-			this.preLoader = null;
-			System.out.println("Preload complete");
-		  }	
-		}
 	}
 	
 	public int getState() {
@@ -149,6 +140,9 @@ public class Main extends Applet {
 
 	public void setPreloader(Thread preloader) {
 		this.preloader = preloader;
+		if (this.preloader == null) {
+			this.preLoader = null;
+		}
 	}
 
 	public Thread getRender() {
@@ -157,6 +151,9 @@ public class Main extends Applet {
 	
 	public void setRender(Thread newRender) {
 		this.render = newRender;
+		if (this.render == null) {
+			this.renderer = null;
+		}
 	}
 	
 	public Thread getEntities() {
@@ -165,6 +162,9 @@ public class Main extends Applet {
 	
 	public void setEntities(Thread newEntities) {
 		this.entities = newEntities;
+		if (this.entities == null) {
+			this.mainEntities = null;
+		}
 	}
 	
 	public Thread getStats() {
@@ -173,5 +173,16 @@ public class Main extends Applet {
 	
 	public void setStats(Thread newStats) {
 		this.stats = newStats;
+		if (this.stats == null) {
+			this.statTracker = null;
+		}
+	}
+
+	public Level getCurrentLevel() {
+		return currentLevel;
+	}
+
+	public void setCurrentLevel(Level currentLevel) {
+		this.currentLevel = currentLevel;
 	}
 }

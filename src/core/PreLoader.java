@@ -14,6 +14,7 @@ import utils.ResizingArrayQueue;
 public class PreLoader implements Runnable {
 	
 	private Main main;
+	private final String[] allowedFileExtensions = {"gif", "txt", "json"};
 	
 	//Queues used to load the assets.
 	private ResizingArrayQueue<File> fileQueue;
@@ -38,7 +39,15 @@ public class PreLoader implements Runnable {
 	private void recursiveFileLoader(File dir) {
 		File[] dirListing = dir.listFiles();
 		if (!dir.isDirectory()) {
-			if (!dir.getName().equals("sonic_loading_screen.gif") && !dir.toString().substring(dir.toString().lastIndexOf('.') + 1).equals("db")) {
+			String extension = dir.toString().substring(dir.toString().lastIndexOf('.') + 1);
+			boolean valid = false;
+			for (String ext : allowedFileExtensions) {
+				if (extension.equals(ext)) {
+					valid = true;
+					break;
+				}
+			}
+			if (!dir.getName().equals("sonic_loading_screen.gif") && valid) {
 			  fileQueue.enqueue(dir);
 			}
 			return;
@@ -64,7 +73,7 @@ public class PreLoader implements Runnable {
 		
 		while (!fileQueue.isEmpty()) {
 		  try {
-			Thread.sleep(20);
+			Thread.sleep(50);
 		  } catch (InterruptedException ex) {
 			ex.printStackTrace();
 		  }
@@ -92,6 +101,8 @@ public class PreLoader implements Runnable {
 		this.main.assets.setTerrain(terrainList.toArray(new Image[terrainList.size()]));
 		this.main.assets.setSprites(spriteList.toArray(new Image[spriteList.size()]));
 		this.main.preloadingComplete = true;
+		this.main.setState(States.MAIN_MENU);
+		this.main.setPreloader(null);
 	}
 
 }
