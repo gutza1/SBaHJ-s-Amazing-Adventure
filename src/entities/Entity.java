@@ -1,11 +1,11 @@
 package entities;
 
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
 
 import levels.Level;
 import core.Main;
 import utils.AABB;
+import utils.HashMask;
 import utils.Point;
 
 public class Entity {
@@ -15,23 +15,23 @@ public class Entity {
   private Main main;
   private BufferedImage image;
   private BufferedImage collisionImage;
-  private HashSet<Point> collisionMask;
+  private HashMask collisionMask;
   private int posX;
   private int posY;
   private double accelX;
   private double accelY;
   private double deltaX;
   private double deltaY;
-  private HashSet<Point> topCollide;
-  private HashSet<Point> bottomCollide;
+  private HashMask topCollide;
+  private HashMask bottomCollide;
   
   public Entity(BufferedImage image, BufferedImage collisionImage, int spawnX, int spawnY) {
 	  this.posX = spawnX;
 	  this.posY = spawnY;
 	  this.collisionImage = collisionImage;
-	  this.collisionMask = new HashSet<Point>(collisionImage.getHeight() * collisionImage.getWidth());
-	  this.topCollide = new HashSet<Point>(collisionImage.getWidth());
-	  this.bottomCollide = new HashSet<Point>(collisionImage.getWidth());
+	  this.collisionMask = new HashMask(collisionImage.getHeight() * collisionImage.getWidth());
+	  this.topCollide = new HashMask(collisionImage.getWidth());
+	  this.bottomCollide = new HashMask(collisionImage.getWidth());
 	  for (int i = 0; i < collisionImage.getWidth(); i++) {
 		for (int j = 0; j < collisionImage.getHeight(); j++) {
 		  if ((collisionImage.getRGB(i, j) >> 24 & 0xff) != 0) {

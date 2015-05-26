@@ -75,6 +75,10 @@ public class Point implements Comparable<Point> {
   public double getY() {
 	  return this.y;
   }
+  
+  public boolean equals(Point that) {
+    return that.x == this.x && that.y == this.y;
+  }
 
     // return string representation of this point
   public String toString() {
