@@ -1,42 +1,54 @@
 package core;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+import rendering.AnimatedImage;
+import utils.AssetMap;
 
 public class Assets {
-  private Image[] backgroundAssets;
-  private Image[] terrainAssets;
-  private Image[] sprites;
-  private Image loadingScreen;
+  private static AssetMap<BufferedImage> backgroundAssets;
+  private static AssetMap<BufferedImage> terrainAssets;
+  private static AssetMap<BufferedImage> sprites;
+  private static AssetMap<AnimatedImage> animatedSprites;
+  private static AnimatedImage loadingScreen;
   
-  public Image[] getBackgrounds() {
-	  return this.backgroundAssets;
+  public static AssetMap<BufferedImage> getBackgrounds() {
+	  return backgroundAssets;
   }
   
-  public void setBackgrounds(Image[] backgrounds) {
-	  this.backgroundAssets = backgrounds;
+  public void setBackgrounds(AssetMap<BufferedImage> backgroundList) {
+	  backgroundAssets = backgroundList;
   }
   
-  public Image[] getTerrain() {
-	  return this.terrainAssets;
+  public static AssetMap<BufferedImage> getTerrain() {
+	  return terrainAssets;
   }
   
-  public void setTerrain(Image[] terrain) {
-	  this.terrainAssets = terrain;
+  public void setTerrain(AssetMap<BufferedImage> terrain) {
+	  terrainAssets = terrain;
   }
   
-  public Image[] getSprites() {
-	  return this.sprites;
+  public static AssetMap<BufferedImage> getSprites() {
+	  return sprites;
   }
   
-  public void setSprites(Image[] sprites) {
-	  this.sprites = sprites;
+  public void setSprites(AssetMap<BufferedImage> Sprites) {
+	  sprites = Sprites;
   }
   
-  public Image getLoadingScreen() {
-	  return this.loadingScreen;
+  public static AssetMap<AnimatedImage> getAnimatedSprites() {
+	  return animatedSprites;
   }
   
-  public void setLoadingScreen(Image loadingScreen) {
-	  this.loadingScreen = loadingScreen;
+  public static void setAnimatedSprites(AssetMap<AnimatedImage> aniSprites) {
+	  animatedSprites = aniSprites;
+  }
+  
+  public static AnimatedImage getLoadingScreen() {
+	  return loadingScreen;
+  }
+  
+  public void setLoadingScreen(AnimatedImage temploadingScreen) {
+	  loadingScreen = temploadingScreen;
   }
 }

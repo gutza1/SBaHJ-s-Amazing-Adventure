@@ -10,6 +10,8 @@ public class Level {
 	private BufferedImage terrain;
 	private BufferedImage collisionImage;
 	private HashMask collisionMask;
+	private int spawnPointX;
+	private int spawnPointY;
 	
 	public Level(BufferedImage background, BufferedImage terrain, BufferedImage collisionImage) {
 		this.background = background;
@@ -23,6 +25,8 @@ public class Level {
 			}
 		  }
 		}
+		spawnPointX = 0;
+		spawnPointY = 0;
 	}
 	
 	public BufferedImage getCollisionImage() {
@@ -33,6 +37,12 @@ public class Level {
 	}
 	public HashMask getCollisionMask() {
 		return this.collisionMask;
+	}
+	public int getSpawnPointX() {
+		return spawnPointX;
+	}
+	public int getSpawnPointY() {
+		return spawnPointY;
 	}
 
 }

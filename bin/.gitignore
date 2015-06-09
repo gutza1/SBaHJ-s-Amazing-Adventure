@@ -1,4 +1,5 @@
-/utils/
-/levels/
-/entities/
 /core/
+/entities/
+/levels/
+/rendering/
+/utils/

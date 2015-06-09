@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.net.*;
 
 import javax.imageio.ImageIO;
 
+import rendering.AnimatedImage;
+import utils.AssetMap;
 import utils.ResizingArrayQueue;
 
 public class PreLoader implements Runnable {
@@ -20,20 +23,25 @@ public class PreLoader implements Runnable {
 	private ResizingArrayQueue<File> fileQueue;
 	
 	//Variables used to store the assets;
-	private ArrayList<Image> backgroundList;
-	private ArrayList<Image> terrainList;
-	private ArrayList<Image> spriteList;
+	private AssetMap<BufferedImage> backgroundList;
+	private AssetMap<BufferedImage> terrainList;
+	private AssetMap<BufferedImage> spriteList;
+	private AssetMap<AnimatedImage> animatedSpriteList;
+	private String assetBase;
 	private String codeBase;
 	
-	public PreLoader(Main main) {
+	public PreLoader(Main main) throws IOException {
 		this.main = main;
-		codeBase = (this.main.getCodeBase().toString()).substring(6) + "assets/";
-		backgroundList = new ArrayList<Image>();
-		terrainList = new ArrayList<Image>();
-		spriteList = new ArrayList<Image>();
+		codeBase = (this.main.getCodeBase().toString()).substring(6);
+		assetBase = codeBase + "assets/";
+		backgroundList = new AssetMap<BufferedImage>();
+		terrainList = new AssetMap<BufferedImage>();
+		spriteList = new AssetMap<BufferedImage>();
+		animatedSpriteList = new AssetMap<AnimatedImage>();
 		this.fileQueue = new ResizingArrayQueue<File>();
-		this.main.assets.setLoadingScreen(Toolkit.getDefaultToolkit().getImage(codeBase + "ui/sonic_loading_screen.gif"));
-		recursiveFileLoader(new File(this.codeBase));
+		AnimatedImage loadingScreen = new AnimatedImage(new File(assetBase + "ui/sonic_loading_screen.gif"), this.main);
+		this.main.assets.setLoadingScreen(loadingScreen);
+		recursiveFileLoader(new File(this.assetBase));
 	}
 	
 	private void recursiveFileLoader(File dir) {
@@ -75,31 +83,38 @@ public class PreLoader implements Runnable {
 		  try {
 			Thread.sleep(50);
 		  } catch (InterruptedException ex) {
-			ex.printStackTrace();
 		  }
 		  File asset = fileQueue.dequeue();
 		  String parent = getParentName(asset);
-		  Image image = null;
+		  BufferedImage image = null;
 		  try {
-		    URL url = new URL(main.getCodeBase(), asset.getPath());
-			image = ImageIO.read(url);
+			String extension = asset.toString().substring(asset.toString().lastIndexOf('.') + 1);
+		    if (extension.equals("gif")) {
+		    	animatedSpriteList.put(asset.getName(), new AnimatedImage(asset, main));
+		    }
+		    else {
+		      URL url = new URL(main.getCodeBase(), asset.getPath());
+			  image = ImageIO.read(url);
+		    }
 		  } catch (IOException e) {
 		    e.printStackTrace();
 		  }
-		  if (parent == "background") {
-		    backgroundList.add(image);
-		  }
-		  else if (parent == "terrain") {
-		    terrainList.add(image);
-		  }
-		  else if (parent == "sprites") {
-		    spriteList.add(image);
+		  if (image != null) {
+		    if (parent == "background") {
+		      backgroundList.put(asset.getName(), image);
+		    }
+		    else if (parent == "terrain") {
+		      terrainList.put(asset.getName(), image);
+		    }
+		    else if (parent == "sprites") {
+		      spriteList.put(asset.getName(), image);
+		    }
 		  }
 		}
 		
-		this.main.assets.setBackgrounds(backgroundList.toArray(new Image[backgroundList.size()]));
-		this.main.assets.setTerrain(terrainList.toArray(new Image[terrainList.size()]));
-		this.main.assets.setSprites(spriteList.toArray(new Image[spriteList.size()]));
+		this.main.assets.setBackgrounds(backgroundList);
+		this.main.assets.setTerrain(terrainList);
+		this.main.assets.setSprites(spriteList);
 		this.main.preloadingComplete = true;
 		this.main.setState(States.MAIN_MENU);
 		this.main.setPreloader(null);

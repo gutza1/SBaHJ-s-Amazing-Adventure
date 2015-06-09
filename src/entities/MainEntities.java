@@ -9,6 +9,7 @@ public class MainEntities implements Runnable {
 	private TreeSet<Entity> entitySet;
 	public final static double GRAVITY_CONSTANT = 5.0;
 	public final static double SLOPE_RATIO = 0.25;
+	private Playable player;
 	
 	public MainEntities() {
 		entitySet = new TreeSet<Entity>();
@@ -32,6 +33,10 @@ public class MainEntities implements Runnable {
 	
 	public void removeEntity(Entity entity) {
 		entitySet.remove(entity);
+	}
+	
+	public Playable getPlayer() {
+		return this.player;
 	}
 
 }

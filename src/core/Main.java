@@ -1,6 +1,7 @@
 package core;
 import java.applet.Applet;
 import java.awt.Graphics;
+import java.io.IOException;
 
 import levels.Level;
 import rendering.Renderer;
@@ -12,7 +13,7 @@ public class Main extends Applet {
 	 * 
 	 */
 	public static final long serialVersionUID = 7L;
-	public static final int FPS_LIMIT = 36;
+	public static final int FPS_LIMIT = 60;
     
 	//global variables. These are universal throughout the program.
 	//state determines what state the game is in (main menu, level selection, etc.)
@@ -43,8 +44,13 @@ public class Main extends Applet {
 		this.assets = new Assets();
 		this.mainEntities = new MainEntities();
 		this.renderer = new Renderer(this);
-		this.statTracker = new StatTracker();
-		this.preLoader = new PreLoader(this);
+		this.statTracker = new StatTracker(this);
+		try {
+			this.preLoader = new PreLoader(this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.setState(States.PRELOADER);
 		this.setPreloader(new Thread(null, this.preLoader, "Preloader"));
 		this.getPreloader().start();
@@ -156,6 +162,10 @@ public class Main extends Applet {
 		}
 	}
 	
+	public Renderer getRenderer() {
+		return this.renderer;
+	}
+	
 	public Thread getEntities() {
 		return this.entities;
 	}
@@ -165,6 +175,10 @@ public class Main extends Applet {
 		if (this.entities == null) {
 			this.mainEntities = null;
 		}
+	}
+	
+	public MainEntities getMainEntities() {
+		return this.mainEntities;
 	}
 	
 	public Thread getStats() {

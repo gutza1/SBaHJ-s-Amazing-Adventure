@@ -8,16 +8,21 @@ import utils.AABB;
 import utils.HashMask;
 import utils.Point;
 
-public class Entity {
+public class Entity implements Comparable<Entity> {
   private AABB movementAABB;
   private boolean terrainClip = false;
   private boolean entityClip = false;
   private Main main;
   private BufferedImage image;
-  private BufferedImage collisionImage;
   private HashMask collisionMask;
   private int posX;
   private int posY;
+  private int moveSpeedX = 0;
+  private int moveSpeedY = 0;
+  private int isMovingX = 0;
+  private int isMovingY = 0;
+
+private final boolean accelMove = false;
   private double accelX;
   private double accelY;
   private double deltaX;
@@ -25,31 +30,30 @@ public class Entity {
   private HashMask topCollide;
   private HashMask bottomCollide;
   
-  public Entity(BufferedImage image, BufferedImage collisionImage, int spawnX, int spawnY) {
+  public Entity(BufferedImage image, int spawnX, int spawnY) {
 	  this.posX = spawnX;
 	  this.posY = spawnY;
-	  this.collisionImage = collisionImage;
-	  this.collisionMask = new HashMask(collisionImage.getHeight() * collisionImage.getWidth());
-	  this.topCollide = new HashMask(collisionImage.getWidth());
-	  this.bottomCollide = new HashMask(collisionImage.getWidth());
-	  for (int i = 0; i < collisionImage.getWidth(); i++) {
-		for (int j = 0; j < collisionImage.getHeight(); j++) {
-		  if ((collisionImage.getRGB(i, j) >> 24 & 0xff) != 0) {
+	  this.collisionMask = new HashMask(image.getHeight() * image.getWidth());
+	  this.topCollide = new HashMask(image.getWidth());
+	  this.bottomCollide = new HashMask(image.getWidth());
+	  for (int i = 0; i < image.getWidth(); i++) {
+		for (int j = 0; j < image.getHeight(); j++) {
+		  if ((image.getRGB(i, j) >> 24 & 0xff) != 0) {
 			collisionMask.add(new Point(i, j));
 		  }
 		}
 	  }
-	  for (int i = 0; i < collisionImage.getWidth(); i++) {
-	    for (int j = 0; j < collisionImage.getHeight(); j++) {
-	      if ((collisionImage.getRGB(i, j) >> 24 & 0xff) != 0) {
+	  for (int i = 0; i < image.getWidth(); i++) {
+	    for (int j = 0; j < image.getHeight(); j++) {
+	      if ((image.getRGB(i, j) >> 24 & 0xff) != 0) {
 			topCollide.add(new Point(i, j));
 			break;
 		  }
 	    }
 	  }
-	  for (int i = 0; i < collisionImage.getWidth(); i++) {
-		for (int j = collisionImage.getHeight() - 1; j > -1; j--) {
-		  if ((collisionImage.getRGB(i, j) >> 24 & 0xff) != 0) {
+	  for (int i = 0; i < image.getWidth(); i++) {
+		for (int j = image.getHeight() - 1; j > -1; j--) {
+		  if ((image.getRGB(i, j) >> 24 & 0xff) != 0) {
 			bottomCollide.add(new Point(i, j));
 			break;
 		  }
@@ -75,6 +79,13 @@ public class Entity {
 	  return rgb;
   }
   
+  public double getPosX() {
+	  return this.posX;
+  }
+  
+  public double getPosY() {
+	  return this.posY;
+  }
   public double deltaX() {
 	  return deltaX;
   }
@@ -107,6 +118,22 @@ public class Entity {
 	  return deltaY;
   }
   
+  public int getIsMovingX() {
+		return isMovingX;
+	  }
+
+  public void setIsMovingX(int isMovingX) {
+	this.isMovingX = isMovingX;
+  }
+  
+  public int getIsMovingY() {
+	return isMovingY;
+  }
+
+  public void setIsMovingY(int isMovingY) {
+	this.isMovingY = isMovingY;
+  }
+  
   public double speed() {
 	  return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   }
@@ -118,6 +145,22 @@ public class Entity {
   public void update() {
 	  this.deltaX += this.accelX;
 	  this.deltaY += this.accelY - MainEntities.GRAVITY_CONSTANT;
+	  if (isMovingX != 0) {
+		  if (accelMove) {
+			  this.accelX += this.moveSpeedX * isMovingX;
+		  }
+		  else {
+			  this.deltaX += this.moveSpeedX * isMovingX;
+		  }
+	  }
+	  if (isMovingY != 0) {
+		  if (accelMove) {
+			  this.accelY += this.moveSpeedY * isMovingX;
+		  }
+		  else {
+			  this.deltaY += this.moveSpeedY * isMovingX;
+		  }
+	  }
 	  if (this.terrainClip) {
 		    terrainCollide(this.main.getCurrentLevel());
 	  }
@@ -167,4 +210,12 @@ public class Entity {
 	  }
 	  
   }
+
+  @Override
+  public int compareTo(Entity o) {
+	// TODO Auto-generated method stub
+	return 0;
+  }
+  
+  
 }
