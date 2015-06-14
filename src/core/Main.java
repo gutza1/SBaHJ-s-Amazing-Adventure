@@ -12,7 +12,7 @@ public class Main extends Applet {
 	/**
 	 * 
 	 */
-	public static final long serialVersionUID = 8L;
+	public static final long serialVersionUID = 9L;
 	public static final int FPS_LIMIT = 60;
     
 	//global variables. These are universal throughout the program.

@@ -14,10 +14,12 @@ public class Level implements Comparable<Level> {
 	private int spawnPointY;
 	private final int number;
 	private final int world;
+	private final String name;
 	
-	public Level(BufferedImage background, BufferedImage terrain, BufferedImage collisionImage, int world, int number) {
+	public Level(BufferedImage background, BufferedImage terrain, BufferedImage collisionImage, int world, int number, String name) {
 		this.number = number;
 		this.world = world;
+		this.name = name;
 		this.background = background;
 		this.terrain = terrain;
 		this.collisionImage = collisionImage;
@@ -94,5 +96,8 @@ public class Level implements Comparable<Level> {
 				return 1;
 			}
 		}
+	}
+	public String getName() {
+		return name;
 	}
 }
