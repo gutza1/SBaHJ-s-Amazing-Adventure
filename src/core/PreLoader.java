@@ -1,11 +1,8 @@
 package core;
 
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.net.*;
 
 import javax.imageio.ImageIO;
@@ -77,21 +74,15 @@ public class PreLoader implements Runnable {
 	    return parent;      
 	}
 	
-	public void run() {
-		
-		while (!fileQueue.isEmpty()) {
-		  try {
-			Thread.sleep(50);
-		  } catch (InterruptedException ex) {
+	private void loadAsset() {
+		File asset = fileQueue.dequeue();
+		String parent = getParentName(asset);
+		BufferedImage image = null;
+		try {
+	      String extension = asset.toString().substring(asset.toString().lastIndexOf('.') + 1);
+		  if (extension.equals("gif")) {
+		    animatedSpriteList.put(asset.getName(), new AnimatedImage(asset, main));
 		  }
-		  File asset = fileQueue.dequeue();
-		  String parent = getParentName(asset);
-		  BufferedImage image = null;
-		  try {
-			String extension = asset.toString().substring(asset.toString().lastIndexOf('.') + 1);
-		    if (extension.equals("gif")) {
-		    	animatedSpriteList.put(asset.getName(), new AnimatedImage(asset, main));
-		    }
 		    else {
 		      URL url = new URL(main.getCodeBase(), asset.getPath());
 			  image = ImageIO.read(url);
@@ -110,6 +101,16 @@ public class PreLoader implements Runnable {
 		      spriteList.put(asset.getName(), image);
 		    }
 		  }
+	}
+
+	public void run() {
+		
+		while (!fileQueue.isEmpty()) {
+		  try {
+			Thread.sleep(50);
+		  } catch (InterruptedException ex) {
+		  }
+		  loadAsset();
 		}
 		
 		this.main.assets.setBackgrounds(backgroundList);

@@ -6,13 +6,13 @@ import rendering.AnimatedImage;
 import utils.AssetMap;
 
 public class Assets {
-  private static AssetMap<BufferedImage> backgroundAssets;
-  private static AssetMap<BufferedImage> terrainAssets;
-  private static AssetMap<BufferedImage> sprites;
-  private static AssetMap<AnimatedImage> animatedSprites;
-  private static AnimatedImage loadingScreen;
+  private AssetMap<BufferedImage> backgroundAssets;
+  private AssetMap<BufferedImage> terrainAssets;
+  private AssetMap<BufferedImage> sprites;
+  private AssetMap<AnimatedImage> animatedSprites;
+  private AnimatedImage loadingScreen;
   
-  public static AssetMap<BufferedImage> getBackgrounds() {
+  public AssetMap<BufferedImage> getBackgrounds() {
 	  return backgroundAssets;
   }
   
@@ -20,7 +20,7 @@ public class Assets {
 	  backgroundAssets = backgroundList;
   }
   
-  public static AssetMap<BufferedImage> getTerrain() {
+  public AssetMap<BufferedImage> getTerrain() {
 	  return terrainAssets;
   }
   
@@ -28,7 +28,7 @@ public class Assets {
 	  terrainAssets = terrain;
   }
   
-  public static AssetMap<BufferedImage> getSprites() {
+  public AssetMap<BufferedImage> getSprites() {
 	  return sprites;
   }
   
@@ -36,15 +36,15 @@ public class Assets {
 	  sprites = Sprites;
   }
   
-  public static AssetMap<AnimatedImage> getAnimatedSprites() {
+  public AssetMap<AnimatedImage> getAnimatedSprites() {
 	  return animatedSprites;
   }
   
-  public static void setAnimatedSprites(AssetMap<AnimatedImage> aniSprites) {
+  public void setAnimatedSprites(AssetMap<AnimatedImage> aniSprites) {
 	  animatedSprites = aniSprites;
   }
   
-  public static AnimatedImage getLoadingScreen() {
+  public AnimatedImage getLoadingScreen() {
 	  return loadingScreen;
   }
   

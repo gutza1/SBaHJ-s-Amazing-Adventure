@@ -2,9 +2,12 @@ package rendering;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
+import core.Assets;
 import core.Main;
 import core.States;
+import entities.Entity;
 import entities.Playable;
 
 public class Renderer implements Runnable{
@@ -60,13 +63,22 @@ public class Renderer implements Runnable{
   public void paint(Graphics g) {
 	  if (this.main.assets != null) {
 		  if (this.main.assets.getLoadingScreen() != null) {
-		    g.drawImage(this.main.assets.getLoadingScreen().getCurrentFrame(), 0, 0, this.main.getWidth(), this.main.getHeight(), this.main);
+		    g.drawImage(this.main.assets.getLoadingScreen().getFrame(), 0, 0, this.main.getWidth(), this.main.getHeight(), this.main);
 		  }
-		  if (this.main.getState() == States.LEVEL && this.main.getMainEntities().getPlayer() != null) {
+		  if (main.getState() == States.LEVEL && this.main.getMainEntities().getPlayer() != null) {
 			  Playable player = this.main.getMainEntities().getPlayer();
-			  viewPortX = (int) Math.max(this.main.getSize().width, player.getPosX());
-			  viewPortY = (int) Math.max(this.main.getSize().height, player.getPosY());
+			  viewPortX = (int) (Math.min(this.main.getSize().width, player.getPosX()) + player.deltaX());
+			  viewPortY = (int) (Math.min(this.main.getSize().height, player.getPosY()) + player.deltaY());
 			  g.translate(viewPortX, viewPortY);
+			  g.drawImage(main.getCurrentLevel().getBackground().getSubimage(viewPortX - this.main.getSize().width / 2, viewPortX - this.main.getSize().height / 2, this.main.getSize().width, this.main.getSize().height), 0, 0, null);
+			  for (Entity entity : main.getMainEntities().getEntities()) {
+				  BufferedImage entityImage = entity.getImage();
+				  boolean inRender = (entity.getPosX() - entityImage.getWidth() / 2 >= viewPortX) && (entity.getPosX() + entityImage.getWidth() / 2 <= viewPortX + this.main.getSize().width) && (entity.getPosY() - entityImage.getHeight() / 2 >= viewPortY) && (entity.getPosY() + entityImage.getHeight() / 2 <= viewPortY + this.main.getSize().height);
+				  if (inRender) {
+					  g.drawImage(entityImage, (int) entity.getPosX() - entityImage.getWidth() / 2, (int) entity.getPosY() - entityImage.getHeight() / 2, null);
+				  }
+			  }
+			  g.drawImage(main.getCurrentLevel().getTerrain().getSubimage(viewPortX - this.main.getSize().width / 2, viewPortX - this.main.getSize().height / 2, this.main.getSize().width, this.main.getSize().height), 0, 0, null);
 		  }
 	  }
   }

@@ -38,5 +38,8 @@ public class MainEntities implements Runnable {
 	public Playable getPlayer() {
 		return this.player;
 	}
-
+	
+	public TreeSet<Entity> getEntities() {
+		return entitySet;
+	}
 }

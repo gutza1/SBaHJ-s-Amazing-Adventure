@@ -60,10 +60,13 @@ public class AnimatedImage extends Image {
 		loading = false;
 	}
 	
-	public BufferedImage getCurrentFrame() {
+	public BufferedImage getFrame() {
 		return frames[animator.frame()];
 	}
 
+	public BufferedImage getFrame(int frame) {
+		return frames[frame];
+	}
 	@Override
 	public Graphics getGraphics() {
 		// TODO Auto-generated method stub
@@ -71,7 +74,7 @@ public class AnimatedImage extends Image {
 	}
 
 	@Override
-	public int getHeight(ImageObserver arg0) {
+	public int getHeight(ImageObserver obs) {
 		// TODO Auto-generated method stub
 		if (loading) {
 			return -1;
@@ -94,7 +97,7 @@ public class AnimatedImage extends Image {
 	}
 
 	@Override
-	public int getWidth(ImageObserver arg0) {
+	public int getWidth(ImageObserver obs) {
 		// TODO Auto-generated method stub
 		if (loading) {
 			return -1;

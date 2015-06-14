@@ -2,6 +2,7 @@ package entities;
 
 import java.awt.image.BufferedImage;
 
+import rendering.AnimatedImage;
 import levels.Level;
 import core.Main;
 import utils.AABB;
@@ -14,7 +15,9 @@ public class Entity implements Comparable<Entity> {
   private boolean entityClip = false;
   private Main main;
   private BufferedImage image;
-  private HashMask collisionMask;
+  private AnimatedImage aniImage;
+
+private HashMask collisionMask;
   private int posX;
   private int posY;
   private int moveSpeedX = 0;
@@ -36,6 +39,7 @@ private final boolean accelMove = false;
 	  this.collisionMask = new HashMask(image.getHeight() * image.getWidth());
 	  this.topCollide = new HashMask(image.getWidth());
 	  this.bottomCollide = new HashMask(image.getWidth());
+	  this.image = image;
 	  for (int i = 0; i < image.getWidth(); i++) {
 		for (int j = 0; j < image.getHeight(); j++) {
 		  if ((image.getRGB(i, j) >> 24 & 0xff) != 0) {
@@ -54,6 +58,38 @@ private final boolean accelMove = false;
 	  for (int i = 0; i < image.getWidth(); i++) {
 		for (int j = image.getHeight() - 1; j > -1; j--) {
 		  if ((image.getRGB(i, j) >> 24 & 0xff) != 0) {
+			bottomCollide.add(new Point(i, j));
+			break;
+		  }
+	    }
+	  }
+  }
+  
+  public Entity(AnimatedImage image, int spawnX, int spawnY) {
+	  this.posX = spawnX;
+	  this.posY = spawnY;
+	  this.collisionMask = new HashMask(image.getHeight(null) * image.getWidth(null));
+	  this.topCollide = new HashMask(image.getWidth(null));
+	  this.bottomCollide = new HashMask(image.getWidth(null));
+	  this.aniImage = image;
+	  for (int i = 0; i < image.getWidth(null); i++) {
+		for (int j = 0; j < image.getHeight(null); j++) {
+		  if ((image.getFrame(0).getRGB(i, j) >> 24 & 0xff) != 0) {
+			collisionMask.add(new Point(i, j));
+		  }
+		}
+	  }
+	  for (int i = 0; i < image.getWidth(null); i++) {
+	    for (int j = 0; j < image.getHeight(null); j++) {
+	      if ((image.getFrame(0).getRGB(i, j) >> 24 & 0xff) != 0) {
+			topCollide.add(new Point(i, j));
+			break;
+		  }
+	    }
+	  }
+	  for (int i = 0; i < image.getWidth(null); i++) {
+		for (int j = image.getHeight(null) - 1; j > -1; j--) {
+		  if ((image.getFrame(0).getRGB(i, j) >> 24 & 0xff) != 0) {
 			bottomCollide.add(new Point(i, j));
 			break;
 		  }
@@ -209,6 +245,15 @@ private final boolean accelMove = false;
 		  }
 	  }
 	  
+  }
+  
+  public BufferedImage getImage() {
+		if (image == null) {
+			return aniImage.getFrame();
+		}
+		else {
+			return image;
+		}
   }
 
   @Override
