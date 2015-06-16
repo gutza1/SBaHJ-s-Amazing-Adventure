@@ -26,6 +26,7 @@ public class PreLoader implements Runnable {
 	private AssetMap<AnimatedImage> animatedSpriteList;
 	private String assetBase;
 	private String codeBase;
+	private Thread thread;
 	
 	public PreLoader(Main main) throws IOException {
 		this.main = main;
@@ -39,6 +40,8 @@ public class PreLoader implements Runnable {
 		AnimatedImage loadingScreen = new AnimatedImage(new File(assetBase + "ui/sonic_loading_screen.gif"), this.main);
 		this.main.assets.setLoadingScreen(loadingScreen);
 		recursiveFileLoader(new File(this.assetBase));
+		this.thread = new Thread(null, this, "Preloader");
+		this.thread.start();
 	}
 	
 	private void recursiveFileLoader(File dir) {
@@ -116,9 +119,9 @@ public class PreLoader implements Runnable {
 		this.main.assets.setBackgrounds(backgroundList);
 		this.main.assets.setTerrain(terrainList);
 		this.main.assets.setSprites(spriteList);
-		this.main.preloadingComplete = true;
+		this.thread.interrupt();
+		this.thread = null;
 		this.main.setState(States.MAIN_MENU);
-		this.main.setPreloader(null);
 	}
 
 }

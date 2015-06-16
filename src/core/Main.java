@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.io.IOException;
 
 import levels.Level;
+import levels.LevelList;
 import rendering.Renderer;
 import entities.MainEntities;
 import entities.StatTracker;
@@ -12,7 +13,7 @@ public class Main extends Applet {
 	/**
 	 * 
 	 */
-	public static final long serialVersionUID = 9L;
+	public static final long serialVersionUID = 10L;
 	public static final int FPS_LIMIT = 60;
     
 	//global variables. These are universal throughout the program.
@@ -22,25 +23,25 @@ public class Main extends Applet {
 	private Level currentLevel;
 	private int screenX;
 	private int screenY;
-	
+	private LevelList levelList;
 	// these variables are the threads that handle rendering, physics, and statistics tracking respectively
 	private Thread render;
 	private Thread entities;
 	private Thread stats;
-	private Thread preloader;
 	
 	//these variables are the classes that control the code for the aftforementioned threads
 	private MainEntities mainEntities;
 	private Renderer renderer;
 	private StatTracker statTracker;
 	private PreLoader preLoader;
-	public boolean preloadingComplete = false;
 	
 	//this variable stores the background, terrain, sprites, menus, cutscenes, and sound
 	public Assets assets;
 	
 	// init - method is called the first time you enter the HTML site with the applet
 	public void init() {
+		int[][][] levels = {{{500, 500}}};
+		this.levelList = new LevelList(levels);
 		this.assets = new Assets();
 		this.mainEntities = new MainEntities();
 		this.renderer = new Renderer(this);
@@ -51,9 +52,7 @@ public class Main extends Applet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.setState(States.PRELOADER);
-		this.setPreloader(new Thread(null, this.preLoader, "Preloader"));
-		this.getPreloader().start();
+		this.setState(States.LOADING);
 		this.render = new Thread(null, this.renderer, "Rendering");
 		this.render.start();
 	}
@@ -138,17 +137,6 @@ public class Main extends Applet {
 	
 	public void setScore(int newScore) {
 		this.score = newScore;
-	}
-	
-	public Thread getPreloader() {
-		return preloader;
-	}
-
-	public void setPreloader(Thread preloader) {
-		this.preloader = preloader;
-		if (this.preloader == null) {
-			this.preLoader = null;
-		}
 	}
 
 	public Thread getRender() {

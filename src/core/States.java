@@ -10,7 +10,7 @@ public class States {
 	public static final int STATISTICS_SCREEN = 6;
 	public static final int CREDITS = 7;
 	public static final int LEVEL = 8;
-	public static final int PRELOADER = 9;
+	public static final int LOADING = 9;
 	public static final int CUTSCENE = 10;
 	public static final int VICTORY_SCREEN = 11;
 }

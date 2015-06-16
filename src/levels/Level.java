@@ -16,9 +16,9 @@ public class Level implements Comparable<Level> {
 	private final int world;
 	private final String name;
 	
-	public Level(BufferedImage background, BufferedImage terrain, BufferedImage collisionImage, int world, int number, String name) {
-		this.number = number;
-		this.world = world;
+	public Level(BufferedImage background, BufferedImage terrain, BufferedImage collisionImage, String name) {
+		this.number = name.charAt(2);
+		this.world = name.charAt(0);
 		this.name = name;
 		this.background = background;
 		this.terrain = terrain;
@@ -62,14 +62,6 @@ public class Level implements Comparable<Level> {
 	public int getSpawnPointY() {
 		return spawnPointY;
 	}
-	
-	public int getWorld() {
-		return world;
-	}
-	
-	public int getNumber() {
-		return number;
-	}
 
 	@Override
 	public int compareTo(Level arg0) {
@@ -78,14 +70,14 @@ public class Level implements Comparable<Level> {
 			return -1;
 		}
 		else {
-			if (arg0.getWorld() > world) {
+			if (arg0.getName().charAt(0) > world) {
 				return -1;
 			}
-			else if (arg0.getWorld() == world) {
-				if (arg0.getNumber() > number) {
+			else if (arg0.getName().charAt(0) == world) {
+				if (arg0.getName().charAt(2) > number) {
 					return -1;
 				}
-				else if (arg0.getNumber() == number) {
+				else if (arg0.getName().charAt(2) == number) {
 					return 0;
 				}
 				else {

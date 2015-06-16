@@ -17,7 +17,7 @@ public class Entity implements Comparable<Entity> {
   private BufferedImage image;
   private AnimatedImage aniImage;
 
-private HashMask collisionMask;
+  private HashMask collisionMask;
   private int posX;
   private int posY;
   private int moveSpeedX = 0;
@@ -25,13 +25,14 @@ private HashMask collisionMask;
   private int isMovingX = 0;
   private int isMovingY = 0;
 
-private final boolean accelMove = false;
+  private final boolean accelMove = false;
   private double accelX;
   private double accelY;
   private double deltaX;
   private double deltaY;
   private HashMask topCollide;
   private HashMask bottomCollide;
+  private String name;
   
   public Entity(BufferedImage image, int spawnX, int spawnY) {
 	  this.posX = spawnX;
@@ -255,12 +256,14 @@ private final boolean accelMove = false;
 			return image;
 		}
   }
+  
+  public String getName() {
+	  return name;
+  }
 
   @Override
   public int compareTo(Entity o) {
 	// TODO Auto-generated method stub
 	return 0;
   }
-  
-  
 }

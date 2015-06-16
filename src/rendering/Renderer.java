@@ -62,10 +62,10 @@ public class Renderer implements Runnable{
   
   public void paint(Graphics g) {
 	  if (this.main.assets != null) {
-		  if (this.main.assets.getLoadingScreen() != null) {
+		  if (this.main.assets.getLoadingScreen() != null && this.main.getState() == States.LOADING) {
 		    g.drawImage(this.main.assets.getLoadingScreen().getFrame(), 0, 0, this.main.getWidth(), this.main.getHeight(), this.main);
 		  }
-		  if (main.getState() == States.LEVEL && this.main.getMainEntities().getPlayer() != null) {
+		  if (main.getState() == States.LEVEL && this.main.getCurrentLevel() != null && this.main.getMainEntities().getPlayer() != null) {
 			  Playable player = this.main.getMainEntities().getPlayer();
 			  viewPortX = (int) (Math.min(this.main.getSize().width, player.getPosX()) + player.deltaX());
 			  viewPortY = (int) (Math.min(this.main.getSize().height, player.getPosY()) + player.deltaY());
